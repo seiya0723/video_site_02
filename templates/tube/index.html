@@ -1,0 +1,72 @@
+{% extends "common/sidebar.html" %}
+
+
+{% block site_title %}サイトのタイトル{% endblock %}
+
+
+{% block extra_head %}
+<script>console.log("追加のcssやjsがあればここにまとめて書く");</script>
+{% endblock %}
+
+
+
+{% block page_title %}{% endblock %}
+
+{% block main %}
+<main class="container">
+
+        <form method="GET">
+            <div>OR検索はチェックを入れる:<input type="checkbox" name="option" {% if request.GET.option %}checked{% endif %}></div>
+            <input type="text" name="search" value="{{ request.GET.search }}">
+            <input type="submit" value="検索">
+        </form>
+
+
+
+    <form method="POST">
+        {% csrf_token %}
+
+        
+        <div><input class = "form-text" placeholder="タイトル..." name="title" value="{{ request.POST.title }}"></div>
+
+        <div><textarea class="form-control" name="comment" placeholder="概要欄..." value="{{ request.POST.comment }}"></textarea></div>
+        <input type="submit" value="送信">
+
+    </form>
+      {% for video in videos %}
+    <div class="border">
+        <div>{{ video.id }}</div>
+        <div>{{ video.title }}</div>
+        <div>{{ video.dt }}</div>
+        <div>{{ video.comment }}</div>
+
+
+        <!--TIPS:urlテンプレートタグの逆引き時に引数が必要な場合、半角スペースひとつ開けた後、適宜引数を与える-->
+        <form action="{% url 'tube:delete' video.id %}" method="POST" style="display:inline-block;">
+            {% csrf_token %}
+            <button class="btn btn-danger">削除</button>
+        </form>
+
+        <a class="btn btn-success" href="{% url 'tube:update' video.id  %}">編集</a>
+
+    </div>
+      {% endfor %}
+</main>
+{% endblock %}
+
+
+
+
+<!--TIPS:DTLのコメントアウトは{# #}で 
+
+    {# videos #}
+-->
+
+<!--&lt;!&ndash;ユーザーがログイン済みの場合、userのis_authenticated属性値で判定できる。&ndash;&gt;-->
+<!--  {% if user.is_authenticated %}-->
+<!--  <div>こんにちは{{ user.get_username }}さん</div>-->
+<!--  {% else%}-->
+<!--  <div>ログインしてください</div>-->
+<!--  {% endif %}-->
+
+
